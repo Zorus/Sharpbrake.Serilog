@@ -38,7 +38,7 @@ namespace Sharpbrake.Serilog
             {
                 try
                 {
-                    LogEvent item = await _logChannel.Reader.ReadAsync().ConfigureAwait(false);
+                    LogEvent item = await _logChannel.Reader.ReadAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
                     await SendEventAsync(item).ConfigureAwait(false);
                 }
                 catch (Exception ex)
