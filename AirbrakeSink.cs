@@ -1,4 +1,5 @@
 ﻿using Serilog.Core;
+using Serilog.Debugging;
 using Serilog.Events;
 using Sharpbrake.Client;
 using Sharpbrake.Client.Model;
@@ -11,47 +12,20 @@ namespace Sharpbrake.Serilog
 {
     public class AirbrakeSink : ILogEventSink
     {
-        private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly Channel<LogEvent> _logChannel;
         private readonly AirbrakeNotifier _airbrake;
 
-        public AirbrakeSink(string projectId, string projectKey, CancellationToken cancellationToken = default)
+        public AirbrakeSink(string projectId, string projectKey)
         : this(new AirbrakeConfig()
             {
                 ProjectId = projectId,
                 ProjectKey = projectKey
-            }
-            , cancellationToken)
+            })
         { 
         }
 
-        public AirbrakeSink(AirbrakeConfig config, CancellationToken cancellationToken = default)
+        public AirbrakeSink(AirbrakeConfig config)
         {
-            _logChannel = Channel.CreateUnbounded<LogEvent>();
             _airbrake = new AirbrakeNotifier(config);
-            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        }
-
-        private async void ProcessLogsAsync()
-        {
-            while (!_cancellationTokenSource.Token.IsCancellationRequested)
-            {
-                try
-                {
-                    LogEvent item = await _logChannel.Reader.ReadAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-                    await SendEventAsync(item).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        private async Task SendEventAsync(LogEvent logEvent)
-        {
-            var notice = BuildNotice(logEvent);
-            var responce = await _airbrake.NotifyAsync(notice).ConfigureAwait(false);
         }
 
         private Notice BuildNotice(LogEvent logEvent)
@@ -68,7 +42,18 @@ namespace Sharpbrake.Serilog
 
         public void Emit(LogEvent logEvent)
         {
-            _logChannel.Writer.TryWrite(logEvent);
+            try
+            {
+                var notice = BuildNotice(logEvent);
+                _airbrake.NotifyAsync(notice)
+                    .ConfigureAwait(false)
+                    .GetAwaiter()
+                    .GetResult();
+            }
+            catch(Exception ex)
+            {
+                SelfLog.WriteLine($"Failed to send logs. {ex}");
+            }
         }
     }
 }
