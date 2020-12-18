@@ -17,7 +17,7 @@ namespace Serilog
             this LoggerSinkConfiguration sinkConfiguration,
             string projectId, 
             string projectKey,
-            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error)
         {
             return sinkConfiguration.Sink(new AirbrakeSink(projectId, projectKey), restrictedToMinimumLevel);
         }
@@ -25,7 +25,7 @@ namespace Serilog
         public static LoggerConfiguration Airbrake(
             this LoggerSinkConfiguration sinkConfiguration,
             AirbrakeConfig config,
-            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error)
         {
             return sinkConfiguration.Sink(new AirbrakeSink(config), restrictedToMinimumLevel);
         }
