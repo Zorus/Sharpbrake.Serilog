@@ -4,6 +4,7 @@ using Serilog.Events;
 using Sharpbrake.Client;
 using Sharpbrake.Client.Model;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -36,7 +37,16 @@ namespace Sharpbrake.Serilog
             }
             else
             {
-                return _airbrake.BuildNotice(logEvent.RenderMessage());
+                var notice = _airbrake.BuildNotice(logEvent.RenderMessage());
+                if(logEvent is StackTraceLogEvent stackTraceEvent)
+                {
+                    var error = notice.Errors.FirstOrDefault();
+                    if(error != null)
+                    {
+                        error.Backtrace = Utils.GetBacktrace(stackTraceEvent.StackTrace);
+                    }
+                }
+                return notice;
             }
         }
 
