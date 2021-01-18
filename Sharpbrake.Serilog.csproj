@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Sharpbrake.Serilog</AssemblyName>
 	<PackageId>Sharpbrake.Serilog</PackageId>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
 	<Version>1.0.3</Version>
 	<Description>Serilog sink for Airbrake</Description>
 	<AssemblyVersion>1.0.3.0</AssemblyVersion>
