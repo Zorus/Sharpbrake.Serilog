@@ -3,11 +3,9 @@
 
 A Serilog sink that send logs to airbrake. 
 
-In the example shown, the sink will send logs to airbrake with minimum log level `LogEventLevel.Fatal`. The Sharpbrake.Serilog Sink also supports more flexible Airbrake customization using the AirbrakeConfig class.
+In the example shown, the sink will send logs to [Airbrake](https://airbrake.io) with minimum log level `LogEventLevel.Fatal`. The Sharpbrake.Serilog Sink also supports more flexible Airbrake customization using the AirbrakeConfig class.
 ```csharp
 Log.Logger = new LoggerConfiguration()
 	.WriteTo.Airbrake(projectId: "<projectId>", projectKey: "<projectKey>", LogEventLevel.Fatal)
 	.CreateLogger();
 ```
-
-Airbrake repo is located: [sharpbrake](https://github.com/airbrake/sharpbrake)
