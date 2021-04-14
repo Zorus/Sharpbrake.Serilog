@@ -10,6 +10,7 @@
 	<PackageProjectUrl>https://github.com/Zorus/Sharpbrake.Serilog</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Zorus/Sharpbrake.Serilog</RepositoryUrl>
+    <PackageReleaseNotes>A Serilog sink that send logs to airbrake.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
