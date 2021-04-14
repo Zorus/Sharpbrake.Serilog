@@ -2,12 +2,15 @@
 
   <PropertyGroup>
     <AssemblyName>Sharpbrake.Serilog</AssemblyName>
-	<PackageId>Sharpbrake.Serilog</PackageId>
+    <Authors>Zorus Inc.</Authors>
+    <Company>Zorus Inc.</Company>
+    <Copyright>Copyright 2021 Zorus Inc. All rights reserved.</Copyright>
+    <PackageId>Sharpbrake.Serilog</PackageId>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-	<Version>1.0.5</Version>
-	<Description>Serilog sink for Airbrake</Description>
-	<AssemblyVersion>1.0.5.0</AssemblyVersion>
-	<PackageProjectUrl>https://github.com/Zorus/Sharpbrake.Serilog</PackageProjectUrl>
+    <Version>1.0.5</Version>
+    <Description>Serilog sink for Airbrake</Description>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <PackageProjectUrl>https://github.com/Zorus/Sharpbrake.Serilog</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Zorus/Sharpbrake.Serilog</RepositoryUrl>
     <PackageReleaseNotes>A Serilog sink that send logs to airbrake.</PackageReleaseNotes>
@@ -17,6 +20,9 @@
     <PackageReference Include="Serilog" Version="2.0.0" />
     <PackageReference Include="Sharpbrake.Client" Version="5.1.0" />
     <PackageReference Include="System.Threading.Channels" Version="4.7.1" />
+    <None Include="LICENSE.md">
+        <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
 </Project>
