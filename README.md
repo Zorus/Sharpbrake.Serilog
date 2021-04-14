@@ -10,4 +10,4 @@ Log.Logger = new LoggerConfiguration()
 	.CreateLogger();
 ```
 
-[Airbrake repo is located](https://github.com/airbrake/sharpbrake)
+Airbrake repo is located: [sharpbrake](https://github.com/airbrake/sharpbrake)
