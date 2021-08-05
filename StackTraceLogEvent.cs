@@ -21,7 +21,27 @@ namespace Sharpbrake.Serilog
                 logEvent.Properties.Select(x => new LogEventProperty(x.Key, x.Value))
                 )
         {
-            StackTrace = new StackTrace(skipFrames: 2);
+            StackTrace = GetStackTrace();
+        }
+
+        private StackTrace GetStackTrace()
+        {
+#if !NETSTANDARD1_4
+            var stackTrace = new StackTrace(fNeedFileInfo: true);
+            for (int i = 0; i < stackTrace.FrameCount; i++)
+            {
+                var stackFrame = stackTrace.GetFrame(i);
+                var namesp = stackFrame.GetMethod().DeclaringType?.Namespace;
+                if (string.IsNullOrEmpty(namesp)
+                    || namesp.StartsWith("Sharpbrake", StringComparison.Ordinal)
+                    || namesp.StartsWith("Serilog", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                return new StackTrace(skipFrames: i, fNeedFileInfo: true);
+            }
+#endif
+            return null;
         }
     }
 }
