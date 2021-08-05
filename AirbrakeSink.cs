@@ -40,10 +40,17 @@ namespace Sharpbrake.Serilog
                 var notice = _airbrake.BuildNotice(logEvent.RenderMessage());
                 if(logEvent is StackTraceLogEvent stackTraceEvent)
                 {
-                    var error = notice.Errors.FirstOrDefault();
-                    if(error != null)
+                    if(notice.Errors.FirstOrDefault() is ErrorEntry error)
                     {
                         error.Backtrace = Utils.GetBacktrace(stackTraceEvent.StackTrace);
+                    }
+                    else
+                    {
+                        notice.Errors.Add(new ErrorEntry()
+                        {
+                            Backtrace = Utils.GetBacktrace(stackTraceEvent.StackTrace),
+                            Message = logEvent.RenderMessage()
+                        });
                     }
                 }
                 return notice;
