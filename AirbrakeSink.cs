@@ -30,7 +30,7 @@ namespace Sharpbrake.Serilog
         {
             if (logEvent.Exception != null)
             {
-                return _airbrake.BuildNotice(logEvent.Exception, logEvent.RenderMessage());
+                return _airbrake.BuildNotice(logEvent.Exception, $"{logEvent.RenderMessage()}. {logEvent.Exception.Message}");
             }
             else
             {
