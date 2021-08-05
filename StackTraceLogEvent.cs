@@ -26,7 +26,6 @@ namespace Sharpbrake.Serilog
 
         private StackTrace GetStackTrace()
         {
-#if !NETSTANDARD1_4
             var stackTrace = new StackTrace(fNeedFileInfo: true);
             for (int i = 0; i < stackTrace.FrameCount; i++)
             {
@@ -40,7 +39,6 @@ namespace Sharpbrake.Serilog
                 }
                 return new StackTrace(skipFrames: i, fNeedFileInfo: true);
             }
-#endif
             return null;
         }
     }
