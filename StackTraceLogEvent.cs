@@ -30,7 +30,7 @@ namespace Sharpbrake.Serilog
             for (int i = 0; i < stackTrace.FrameCount; i++)
             {
                 var stackFrame = stackTrace.GetFrame(i);
-                var namesp = stackFrame.GetMethod().DeclaringType?.Namespace;
+                var namesp = stackFrame.GetMethod()?.DeclaringType?.Namespace;
                 if (string.IsNullOrEmpty(namesp)
                     || namesp.StartsWith("Sharpbrake", StringComparison.Ordinal)
                     || namesp.StartsWith("Serilog", StringComparison.Ordinal))

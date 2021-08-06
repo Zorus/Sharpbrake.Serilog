@@ -35,7 +35,7 @@ namespace Sharpbrake.Serilog
             else
             {
                 var notice = _airbrake.BuildNotice(logEvent.RenderMessage());
-                if(logEvent is StackTraceLogEvent stackTraceEvent)
+                if(logEvent is StackTraceLogEvent stackTraceEvent && stackTraceEvent.StackTrace != null)
                 {
                     if(notice.Errors.FirstOrDefault() is ErrorEntry error)
                     {

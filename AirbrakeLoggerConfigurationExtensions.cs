@@ -34,7 +34,7 @@ namespace Serilog
         /// Workaround to fix Airbrake call stack for Serilog.Sinks.Async
         /// </summary>
         /// <returns></returns>
-        public static LoggerConfiguration StackTraceWrapper(
+        public static LoggerConfiguration StackTraceCapturer(
             this LoggerSinkConfiguration sinkConfiguration,
             Action<LoggerSinkConfiguration> configureWrappedSink)
         {
