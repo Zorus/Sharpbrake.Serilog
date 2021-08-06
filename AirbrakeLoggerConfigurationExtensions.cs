@@ -29,5 +29,19 @@ namespace Serilog
         {
             return sinkConfiguration.Sink(new AirbrakeSink(config), restrictedToMinimumLevel);
         }
+
+        /// <summary>
+        /// Workaround to fix Airbrake call stack for Serilog.Sinks.Async
+        /// </summary>
+        /// <returns></returns>
+        public static LoggerConfiguration StackTraceCapturer(
+            this LoggerSinkConfiguration sinkConfiguration,
+            Action<LoggerSinkConfiguration> configureWrappedSink)
+        {
+            return LoggerSinkConfiguration.Wrap(
+                sinkConfiguration,
+                sink => new StackTraceSink(sink),
+                configureWrappedSink);
+        }
     }
 }
