@@ -1,4 +1,5 @@
 ﻿using Serilog.Core;
+using Serilog.Debugging;
 using Serilog.Events;
 
 using System;
@@ -17,7 +18,16 @@ namespace Sharpbrake.Serilog
 
         public void Emit(LogEvent logEvent)
         {
-            _wrappedSink.Emit(new StackTraceLogEvent(logEvent));
+            StackTraceLogEvent stackTraceLogEvent = null;
+            try
+            {
+                stackTraceLogEvent = new StackTraceLogEvent(logEvent);
+            }
+            catch(Exception ex)
+            {
+                SelfLog.WriteLine($"Failed to wrapp LogEvent. {ex}");
+            }
+            _wrappedSink.Emit(stackTraceLogEvent ?? logEvent);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Serilog
             this LoggerSinkConfiguration sinkConfiguration,
             string projectId, 
             string projectKey,
-            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error)
         {
             return sinkConfiguration.Sink(new AirbrakeSink(projectId, projectKey), restrictedToMinimumLevel);
         }
@@ -25,20 +25,23 @@ namespace Serilog
         public static LoggerConfiguration Airbrake(
             this LoggerSinkConfiguration sinkConfiguration,
             AirbrakeConfig config,
-            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
+            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error)
         {
             return sinkConfiguration.Sink(new AirbrakeSink(config), restrictedToMinimumLevel);
         }
 
-        public static LoggerConfiguration AirbrakeAsync(
+        /// <summary>
+        /// Workaround to fix Airbrake call stack for Serilog.Sinks.Async
+        /// </summary>
+        /// <returns></returns>
+        public static LoggerConfiguration StackTraceCapturer(
             this LoggerSinkConfiguration sinkConfiguration,
-            AirbrakeConfig config,
-            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Verbose)
+            Action<LoggerSinkConfiguration> configureWrappedSink)
         {
             return LoggerSinkConfiguration.Wrap(
                 sinkConfiguration,
                 sink => new StackTraceSink(sink),
-                c => c.Async(x => x.Airbrake(config, restrictedToMinimumLevel)));
+                configureWrappedSink);
         }
     }
 }
