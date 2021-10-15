@@ -8,22 +8,32 @@ using System.Linq;
 
 namespace Sharpbrake.Serilog
 {
+    public interface ILoggerFilter
+    {
+        void SetNoticeSender(Action<LogEvent> sendAction);
+        LogEvent Filter(LogEvent logEvent);
+    }
+
     public class AirbrakeSink : ILogEventSink
     {
         private readonly AirbrakeNotifier _airbrake;
+        private readonly ILoggerFilter _filter;
 
-        public AirbrakeSink(string projectId, string projectKey)
+        public AirbrakeSink(string projectId, string projectKey, ILoggerFilter filter)
         : this(new AirbrakeConfig()
-            {
-                ProjectId = projectId,
-                ProjectKey = projectKey
-            })
-        { 
+        {
+            ProjectId = projectId,
+            ProjectKey = projectKey
+        }, filter)
+        {
         }
 
-        public AirbrakeSink(AirbrakeConfig config)
+        public AirbrakeSink(AirbrakeConfig config, ILoggerFilter filter)
         {
             _airbrake = new AirbrakeNotifier(config);
+            
+            filter?.SetNoticeSender(EmitImpl);
+            _filter = filter;
         }
 
         private Notice BuildNotice(LogEvent logEvent)
@@ -54,7 +64,7 @@ namespace Sharpbrake.Serilog
             }
         }
 
-        public void Emit(LogEvent logEvent)
+        private void EmitImpl(LogEvent logEvent)
         {
             try
             {
@@ -63,6 +73,28 @@ namespace Sharpbrake.Serilog
                     .ConfigureAwait(false)
                     .GetAwaiter()
                     .GetResult();
+            }
+            catch (Exception ex)
+            {
+                SelfLog.WriteLine($"Failed to send logs. {ex}");
+            }
+        }
+
+        public void Emit(LogEvent logEvent)
+        {
+            try
+            {
+                if (_filter != null)
+                {
+                    logEvent = _filter.Filter(logEvent);
+                }
+
+                if (logEvent == null)
+                {
+                    return;
+                }
+
+                EmitImpl(logEvent);
             }
             catch(Exception ex)
             {
