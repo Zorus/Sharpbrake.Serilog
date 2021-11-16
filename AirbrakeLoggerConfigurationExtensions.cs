@@ -18,18 +18,20 @@ namespace Serilog
             string projectId, 
             string projectKey,
             LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error,
-            ILoggerFilter filter = null)
+            ILoggerFilter filter = null,
+            INoticeData noticeData = null)
         {
-            return sinkConfiguration.Sink(new AirbrakeSink(projectId, projectKey, filter), restrictedToMinimumLevel);
+            return sinkConfiguration.Sink(new AirbrakeSink(projectId, projectKey, filter, noticeData), restrictedToMinimumLevel);
         }
 
         public static LoggerConfiguration Airbrake(
             this LoggerSinkConfiguration sinkConfiguration,
             AirbrakeConfig config,
             LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error,
-            ILoggerFilter filter = null)
+            ILoggerFilter filter = null,
+            INoticeData noticeData = null)
         {
-            return sinkConfiguration.Sink(new AirbrakeSink(config, filter), restrictedToMinimumLevel);
+            return sinkConfiguration.Sink(new AirbrakeSink(config, filter, noticeData), restrictedToMinimumLevel);
         }
 
         /// <summary>

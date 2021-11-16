@@ -4,6 +4,7 @@ using Serilog.Events;
 using Sharpbrake.Client;
 using Sharpbrake.Client.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sharpbrake.Serilog
@@ -18,33 +19,36 @@ namespace Sharpbrake.Serilog
     {
         private readonly AirbrakeNotifier _airbrake;
         private readonly ILoggerFilter _filter;
+        private readonly INoticeData _noticeData;
 
-        public AirbrakeSink(string projectId, string projectKey, ILoggerFilter filter)
+        public AirbrakeSink(string projectId, string projectKey, ILoggerFilter filter, INoticeData noticeData)
         : this(new AirbrakeConfig()
         {
             ProjectId = projectId,
             ProjectKey = projectKey
-        }, filter)
+        }, filter, noticeData)
         {
         }
 
-        public AirbrakeSink(AirbrakeConfig config, ILoggerFilter filter)
+        public AirbrakeSink(AirbrakeConfig config, ILoggerFilter filter, INoticeData noticeData)
         {
             _airbrake = new AirbrakeNotifier(config);
-            
+            _noticeData = noticeData;
+
             filter?.SetNoticeSender(EmitImpl);
             _filter = filter;
         }
 
         private Notice BuildNotice(LogEvent logEvent)
         {
+            Notice notice = null;
             if (logEvent.Exception != null)
             {
-                return _airbrake.BuildNotice(logEvent.Exception, $"{logEvent.RenderMessage()}. {logEvent.Exception.Message}");
+                notice = _airbrake.BuildNotice(logEvent.Exception, $"{logEvent.RenderMessage()}. {logEvent.Exception.Message}");
             }
             else
             {
-                var notice = _airbrake.BuildNotice(logEvent.RenderMessage());
+                notice = _airbrake.BuildNotice(logEvent.RenderMessage());
                 if(logEvent is StackTraceLogEvent stackTraceEvent && stackTraceEvent.StackTrace != null)
                 {
                     if(notice.Errors.FirstOrDefault() is ErrorEntry error)
@@ -60,8 +64,10 @@ namespace Sharpbrake.Serilog
                         });
                     }
                 }
-                return notice;
             }
+            notice.EnvironmentVars = _noticeData?.GetEnvironmentVariables();
+            notice.Session = _noticeData?.GetSessionVariables();
+            return notice;
         }
 
         private void EmitImpl(LogEvent logEvent)
