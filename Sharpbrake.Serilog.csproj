@@ -7,7 +7,7 @@
     <Copyright>Copyright 2021 Zorus Inc. All rights reserved.</Copyright>
     <PackageId>Sharpbrake.Serilog</PackageId>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <Description>Serilog sink for Airbrake</Description>
     <AssemblyVersion>1.0.7.0</AssemblyVersion>
     <PackageProjectUrl>https://github.com/Zorus/Sharpbrake.Serilog</PackageProjectUrl>
